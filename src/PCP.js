@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
   PCPcontainer: {
     marginLeft: 0,
     display: "flex",
-    flexDirection: "column"
+    flexDirection: "column",
   },
 }))
 
@@ -172,9 +172,10 @@ export const PCP = ({data, regressions, ignore=[], selectedTreatment, selectedOu
   }
 
   const layout = {"width":615,
-                  "height":350,
+                  "height":280,
                   "marginDefault":60,
-                  "marginBottom": 10}
+                  "marginTop":30,
+                  "marginBottom":10}
   
   useEffect(() => {
     const svgElement = d3.select(ref.current)
@@ -189,7 +190,7 @@ export const PCP = ({data, regressions, ignore=[], selectedTreatment, selectedOu
     const svgHeight = +svgElement.attr('height')
 
     const chartWidth = svgWidth - layout.marginDefault * 2
-    const chartHeight = svgHeight - (layout.marginDefault + layout.marginBottom)
+    const chartHeight = svgHeight - (layout.marginTop + layout.marginBottom)
 
     let yScales = {}
 
@@ -379,9 +380,9 @@ export const PCP = ({data, regressions, ignore=[], selectedTreatment, selectedOu
                          title="Covariates" />
     </div>
     <svg width={layout.width} height={layout.height} ref={ref} id="pcp">
-        <g transform={"translate(" + layout.marginDefault + "," +  layout.marginDefault + ")"} id="pcpDeselected"/>
-        <g transform={"translate(" + layout.marginDefault + "," +  layout.marginDefault + ")"} id="pcpSelected"/>
-        <g transform={"translate(" + layout.marginDefault + "," +  layout.marginDefault + ")"} id="pcpAxes"/>
+        <g transform={"translate(" + layout.marginDefault + "," +  layout.marginTop + ")"} id="pcpDeselected"/>
+        <g transform={"translate(" + layout.marginDefault + "," +  layout.marginTop + ")"} id="pcpSelected"/>
+        <g transform={"translate(" + layout.marginDefault + "," +  layout.marginTop + ")"} id="pcpAxes"/>
     </svg>
   </div>
 }

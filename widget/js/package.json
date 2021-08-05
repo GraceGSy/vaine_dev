@@ -1,12 +1,12 @@
 {
-  "name": "vane-widget",
+  "name": "vaine-widget",
   "version": "0.1.0",
-  "description": "Visual Analytics for Natural Experiments",
+  "description": "Visualization and AI for Natural Experiments",
   "author": "Dustin Arendt",
   "main": "lib/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/PNNL/vane-widget.git"
+    "url": "https://github.com/PNNL/vaine-widget.git"
   },
   "keywords": [
     "jupyter",
