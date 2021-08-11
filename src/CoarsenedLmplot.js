@@ -29,7 +29,12 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import React, {useRef, useEffect} from 'react'
-import * as d3 from 'd3'
+// import * as d3 from 'd3'
+import * as d3array from 'd3-array'
+import * as d3axis from 'd3-axis'
+import * as d3brush from 'd3-brush'
+import * as d3scale from 'd3-scale'
+import * as d3selection from 'd3-selection'
 
 import { getATE } from '../src/helperFunctions/getATE'
 
@@ -41,7 +46,7 @@ import Autorenew from '@material-ui/icons/Autorenew'
 import { makeStyles } from '@material-ui/core/styles'
 
 let d3Tip = require("d3-tip").default;
-d3Tip(d3);
+// d3Tip(d3);
 
 const useStyles = makeStyles((theme) => ({
   lmLayout: {
@@ -125,8 +130,8 @@ export const CoarsenedLmplot = ({selectedTreatment, selectedOutcome, overallATE,
 
       const clusterPoints = clusterRegression.included
 
-      const regressionStart = clusterRegression.predict(d3.min(clusterPoints, d => d[selectedTreatment]))
-      const regressionEnd = clusterRegression.predict(d3.max(clusterPoints, d => d[selectedTreatment]))
+      const regressionStart = clusterRegression.predict(d3array.min(clusterPoints, d => d[selectedTreatment]))
+      const regressionEnd = clusterRegression.predict(d3array.max(clusterPoints, d => d[selectedTreatment]))
 
       newRegressionLines.push({'cluster':c,
                                'x1':regressionStart[0], 
@@ -154,7 +159,7 @@ export const CoarsenedLmplot = ({selectedTreatment, selectedOutcome, overallATE,
 
   // Update selected clusters on user input
   const handleChange = (cluster) => {
-    d3.selectAll(".d3-tip-lmplot").remove()
+    d3selection.selectAll(".d3-tip-lmplot").remove()
     let newValidClusters = JSON.parse(JSON.stringify(validClusters))
     const current = newValidClusters[cluster]
 
@@ -168,21 +173,21 @@ export const CoarsenedLmplot = ({selectedTreatment, selectedOutcome, overallATE,
   }
   
   useEffect(() => {
-    const svgElement = d3.select(ref.current)
+    const svgElement = d3selection.select(ref.current)
 
-    d3.selectAll(".d3-tip-lmplot").remove()
+    d3selection.selectAll(".d3-tip-lmplot").remove()
     
     const g = svgElement.select("g")
 
     const chartHeight = layout.height-(layout.marginDefault * 2)
     const chartWidth = layout.width-(layout.marginDefault + layout.marginLeft)
     
-    const xScale = d3.scaleLinear()
-                     .domain([0, d3.max(dataset, d => d[selectedTreatment])])
+    const xScale = d3scale.scaleLinear()
+                     .domain([0, d3array.max(dataset, d => d[selectedTreatment])])
                      .range([layout.marginLeft, layout.marginLeft + chartWidth])
 
-    const yScale = d3.scaleLinear()
-                     .domain(d3.extent(dataset, d => d[selectedOutcome]))
+    const yScale = d3scale.scaleLinear()
+                     .domain(d3array.extent(dataset, d => d[selectedOutcome]))
                      .range([layout.marginDefault + chartHeight, layout.marginDefault])
 
     const fillColor = (d) => {
@@ -232,10 +237,11 @@ export const CoarsenedLmplot = ({selectedTreatment, selectedOutcome, overallATE,
     }
 
     const highlightBrushedCircles = () => {
-      if (d3.event.selection !== null) {
+      console.log(d3selection.event)
+      if (d3selection.event.selection !== null) {
           points.attr("class", "non_brushed")
 
-          var brush_coords = d3.event.selection
+          var brush_coords = d3selection.event.selection
 
           points.filter((p) => {
                    const cx = xScale(p[selectedTreatment])
@@ -251,13 +257,13 @@ export const CoarsenedLmplot = ({selectedTreatment, selectedOutcome, overallATE,
     // Update deselected points
     // If `command` (meta) key is held down, perform union select
     const updateSelected = () => {
-      if (!d3.event.selection) {
+      if (!d3selection.event.selection) {
         points.attr("class", null)
         onDeselect([], 'lmplot', true)
         return
       }
 
-      d3.select(this).call(brush.move, null)
+      d3selection.select(this).call(brush.move, null)
 
       let newValidClusters = JSON.parse(JSON.stringify(validClusters))
 
@@ -268,16 +274,16 @@ export const CoarsenedLmplot = ({selectedTreatment, selectedOutcome, overallATE,
       const nonBrushed = svgElement.selectAll(".non_brushed").data()
       const nonBrushedIndices = nonBrushed.map(nb => nb.index)
 
-      onDeselect(nonBrushedIndices, 'lmplot', d3.event.sourceEvent.metaKey)
+      onDeselect(nonBrushedIndices, 'lmplot', d3selection.event.sourceEvent.metaKey)
     }
 
-    var brush = d3.brush()
+    var brush = d3brush.brush()
                   .on("brush", highlightBrushedCircles)
                   .on("end", updateSelected)
 
     g.call(brush)
 
-    console.log('d3Tip', d3Tip)
+    // console.log('d3Tip', d3Tip)
     // let tip = {};    
 
     let tip = d3Tip()
@@ -293,11 +299,11 @@ export const CoarsenedLmplot = ({selectedTreatment, selectedOutcome, overallATE,
 
     g.call(tip)
 
-    d3.select("#xAxis")
-      .call(d3.axisBottom(xScale).tickSize(3).ticks(5))
+    d3selection.select("#xAxis")
+      .call(d3axis.axisBottom(xScale).tickSize(3).ticks(5))
 
-    d3.select("#yAxis")
-      .call(d3.axisLeft(yScale).tickSize(3).ticks(5))
+    d3selection.select("#yAxis")
+      .call(d3axis.axisLeft(yScale).tickSize(3).ticks(5))
     
     const points = g.selectAll("circle")
                    .data(dataset)
@@ -353,7 +359,7 @@ export const CoarsenedLmplot = ({selectedTreatment, selectedOutcome, overallATE,
               .style("font-family", "sans-serif")
               .text(d => d)
 
-    d3.selectAll(".tick>text")
+    d3selection.selectAll(".tick>text")
       .style("font-size", 8)
     
   }, [dataset, selectedTreatment, selectedOutcome, regressionLines, validClusters, ATE, deselected, clusterAppearance])
