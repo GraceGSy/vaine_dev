@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 15,
     color: '#505050',
     marginTop: 0,
-    marginBottom: 10
+    marginBottom: 5
   },
   subtitle: {
     fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif;',
@@ -96,11 +96,12 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // Visualizes treatment/outcome plot of clusters
-export const CoarsenedLmplot = ({selectedTreatment, selectedOutcome, overallATE, regressions, validClusters, deselected=[], clusterName={}, clusterAppearance={}, onSelect, onDeselect}) => {
+export const CoarsenedLmplot = ({selectedTreatment, selectedOutcome, overallATE, regressions, validClusters, deselected=[], clusterName={}, clusterAppearance={}, onSelect, onDeselect, overallRegression}) => {
   const classes = useStyles()
   const ref = useRef('lmplot')
 
   const [regressionLines, setRegressionLines] = React.useState([])
+  const [overallRegressionLine, setOverallRegressionLine] = React.useState([])
   const [ATE, setATE] = React.useState(0)
   const [dataset, setDataset] = React.useState([])
 
@@ -143,6 +144,27 @@ export const CoarsenedLmplot = ({selectedTreatment, selectedOutcome, overallATE,
     setRegressionLines(newRegressionLines)
 
   }, [regressions])
+
+  useEffect(() => {
+    let newOverallRegressionLine = []
+
+    const points = overallRegression.included ? overallRegression.included : []
+
+    if (points.length === 0) {
+      setOverallRegressionLine(newOverallRegressionLine)
+    } else {
+      const regressionStart = overallRegression.predict(d3array.min(points, d => d[selectedTreatment]))
+      const regressionEnd = overallRegression.predict(d3array.max(points, d => d[selectedTreatment]))
+
+      newOverallRegressionLine.push({'x1':regressionStart[0], 
+                                    'y1':regressionStart[1],
+                                    'x2':regressionEnd[0],
+                                    'y2':regressionEnd[1]})
+
+      setOverallRegressionLine(newOverallRegressionLine)
+    }
+    
+  }, [overallRegression])
 
   // Calculate average treatment effect of selected clusters
   useEffect(() => {
@@ -237,7 +259,6 @@ export const CoarsenedLmplot = ({selectedTreatment, selectedOutcome, overallATE,
     }
 
     const highlightBrushedCircles = () => {
-      console.log(d3selection.event)
       if (d3selection.event.selection !== null) {
           points.attr("class", "non_brushed")
 
@@ -263,7 +284,7 @@ export const CoarsenedLmplot = ({selectedTreatment, selectedOutcome, overallATE,
         return
       }
 
-      d3selection.select(this).call(brush.move, null)
+      // d3selection.select(this).call(brush.move, null)
 
       let newValidClusters = JSON.parse(JSON.stringify(validClusters))
 
@@ -283,9 +304,6 @@ export const CoarsenedLmplot = ({selectedTreatment, selectedOutcome, overallATE,
 
     g.call(brush)
 
-    // console.log('d3Tip', d3Tip)
-    // let tip = {};    
-
     let tip = d3Tip()
       .attr('class', 'd3-tip-lmplot')
       .offset([-10, 0])
@@ -304,6 +322,19 @@ export const CoarsenedLmplot = ({selectedTreatment, selectedOutcome, overallATE,
 
     d3selection.select("#yAxis")
       .call(d3axis.axisLeft(yScale).tickSize(3).ticks(5))
+
+    const overallLine = g.selectAll(".overallLine")
+                   .data(overallRegressionLine)
+                   .join("line")
+                   .attr("class", "overallLine")
+                   .attr("id", d => `overallRegression`)
+                   .attr("x1", d => xScale(d.x1))
+                   .attr("y1", d => yScale(d.y1))
+                   .attr("x2", d => xScale(d.x2))
+                   .attr("y2", d => yScale(d.y2))
+                   .style("stroke", "#d9d9d9")
+                   .style("stroke-width", 1)
+                   .style("stroke-dasharray", "5, 5")
     
     const points = g.selectAll("circle")
                    .data(dataset)
@@ -316,9 +347,10 @@ export const CoarsenedLmplot = ({selectedTreatment, selectedOutcome, overallATE,
                    .on('mouseover', tip.show)
                    .on('mouseout', tip.hide)
 
-    const lines = g.selectAll("line")
+    const lines = g.selectAll(".regressionLine")
                    .data(regressionLines)
                    .join("line")
+                   .attr("class", "regressionLine")
                    .attr("id", d => `line ${d.cluster}`)
                    .attr("x1", d => xScale(d.x1))
                    .attr("y1", d => yScale(d.y1))
@@ -362,7 +394,7 @@ export const CoarsenedLmplot = ({selectedTreatment, selectedOutcome, overallATE,
     d3selection.selectAll(".tick>text")
       .style("font-size", 8)
     
-  }, [dataset, selectedTreatment, selectedOutcome, regressionLines, validClusters, ATE, deselected, clusterAppearance])
+  }, [dataset, selectedTreatment, selectedOutcome, regressionLines, validClusters, ATE, deselected, clusterAppearance, overallRegressionLine])
   
 
   return (

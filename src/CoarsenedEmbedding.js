@@ -61,8 +61,8 @@ export const CoarsenedEmbedding = ({selectedTreatment, regressions, validCluster
 	//For now, assume margin is equal all around the graph
 	//Do not change these variables anywhere else
 	const layout = {"width":250,
-									"height":250,
-									"margin":25}
+					"height":250,
+					"margin":25}
 
 	// Get all included points
 	useEffect(() => {
@@ -179,7 +179,7 @@ export const CoarsenedEmbedding = ({selectedTreatment, regressions, validCluster
 				return
 			}
 
-			d3.select(this).call(brush.move, null)
+			// d3.select(this).call(brush.move, null)
 
 			const nonBrushed = svgElement.selectAll(".non_brushed").data()
 			const nonBrushedIndices = nonBrushed.map(nb => nb.index)
@@ -192,8 +192,6 @@ export const CoarsenedEmbedding = ({selectedTreatment, regressions, validCluster
 									.on("end", updateSelected)
 
 		g.call(brush)
-
-		console.log('d3Tip', d3Tip)
 		// let tip = {};
 
 		let tip = d3Tip()

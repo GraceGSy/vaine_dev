@@ -6,7 +6,7 @@ import { formatStats } from '../src/helperFunctions/formatStats'
 
 import { CollapseSelectors } from '../src/CollapseSelectors'
 import { ContinuousSlider } from '../src/Slider'
-import { DialogSelectors } from '../src/DialogSelectors'
+// import { DialogSelectors } from '../src/DialogSelectors'
 import { SelectCondition } from '../src/SelectCondition'
 import { Selectors } from '../src/Selectors'
 
@@ -85,17 +85,17 @@ export const CollapseSelectorsTest = () => {
     </div>)
 }
 
-export const DialogSelectorsTest = () => {
-  const [options1, setOptions1] = React.useState({'yes': false, 'no': true})
-  const [options2, setOptions2] = React.useState({'1': true, '2': false, '3': true, '4': false, '5': true})
-  const [options3, setOptions3] = React.useState({'sage': true, 'basil': true, 'cilantro': false,
-                                                  'parsley': false, 'chives': true,
-                                                  'chamomile': true, 'oregano': true, 'pepper': false})
+// export const DialogSelectorsTest = () => {
+//   const [options1, setOptions1] = React.useState({'yes': false, 'no': true})
+//   const [options2, setOptions2] = React.useState({'1': true, '2': false, '3': true, '4': false, '5': true})
+//   const [options3, setOptions3] = React.useState({'sage': true, 'basil': true, 'cilantro': false,
+//                                                   'parsley': false, 'chives': true,
+//                                                   'chamomile': true, 'oregano': true, 'pepper': false})
 
-  return (
-    <div style={{'display':'flex'}}>
-      <DialogSelectors options={options1} sortedClusters={Object.keys(options1)} onSelect={(val) => setOptions1(val)} />
-      <DialogSelectors options={options2} sortedClusters={Object.keys(options2)} onSelect={(val) => setOptions2(val)} />
-      <DialogSelectors options={options3} sortedClusters={Object.keys(options3)} onSelect={(val) => setOptions3(val)} />
-    </div>)
-}
+//   return (
+//     <div style={{'display':'flex'}}>
+//       <DialogSelectors options={options1} sortedClusters={Object.keys(options1)} onSelect={(val) => setOptions1(val)} />
+//       <DialogSelectors options={options2} sortedClusters={Object.keys(options2)} onSelect={(val) => setOptions2(val)} />
+//       <DialogSelectors options={options3} sortedClusters={Object.keys(options3)} onSelect={(val) => setOptions3(val)} />
+//     </div>)
+// }
