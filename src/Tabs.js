@@ -58,7 +58,7 @@ import { RadioSelectors } from './RadioSelectors'
 
 const useStyles = makeStyles((theme) => ({
   tabs: {
-    marginBottom: 15,
+    marginBottom: 0,
     display: 'flex',
   },
   inputBox: {
@@ -77,7 +77,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    marginBottom: 15,
+    marginBottom: 10,
     width: 80,
     overflow: 'hidden'
   },

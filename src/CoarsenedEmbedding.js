@@ -60,8 +60,8 @@ export const CoarsenedEmbedding = ({selectedTreatment, regressions, validCluster
 	//For now, assume margin is equal all around the graph
 	//Do not change these variables anywhere else
 	const layout = {"width":250,
-									"height":250,
-									"margin":25}
+					"height":250,
+					"margin":25}
 
 	// Get all included points
 	useEffect(() => {

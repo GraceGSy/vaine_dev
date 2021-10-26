@@ -45,6 +45,8 @@ export const getATE = (regressions) => {
 	for (let r of Object.keys(regressions)) {
 		const clusterStats = regressions[r]
 
+		// console.log(clusterStats)
+
 		const weighted = clusterStats.equation[0] * clusterStats.included.length / size
 		ATE = ATE + weighted
 	}

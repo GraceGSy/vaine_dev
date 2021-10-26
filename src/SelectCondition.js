@@ -42,20 +42,21 @@ import { makeStyles } from '@material-ui/core/styles'
 const useStyles = makeStyles((theme) => ({
   root: {
     '& .MuiAutocomplete-option': {
-      fontSize: 10
+      fontSize: 12
     }
   },
   autocomplete: {
     display: 'flex',
     width: '150px',
     flexWrap: 'wrap',
+    marginRight: 25,
   },
   textfield: {
     '& .MuiInputBase-input': {
-      fontSize: 10
+      fontSize: 12
     },
     '& .MuiFormLabel-root': {
-      fontSize: 10
+      fontSize: 12
     },
   },
 }))

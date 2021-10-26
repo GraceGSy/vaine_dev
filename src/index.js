@@ -50,6 +50,7 @@ import { Selectors } from './Selectors'
 import { MenuTabs } from './Tabs'
 
 import { clusterStats } from '../src/helperFunctions/clusterStats'
+import { datasetStats } from '../src/helperFunctions/datasetStats'
 import { getATE } from '../src/helperFunctions/getATE'
 import { processData } from '../src/helperFunctions/processData'
 import { realizeClusters } from '../src/helperFunctions/realizeClusters'
@@ -59,10 +60,11 @@ import { makeStyles } from '@material-ui/core/styles'
 const useStyles = makeStyles((theme) => ({
 	main: {
 		display: 'flex',
+		marginLeft: 20,
 	},
 	selections: {
 		width: 150,
-		marginRight: 15
+		marginRight: 25
 	},
 	body: {
 		display: 'flex',
@@ -72,7 +74,7 @@ const useStyles = makeStyles((theme) => ({
 		display: 'flex'
 	},
 	paperEmbedding: {
-		padding: '25px',
+		padding: '15px 25px',
 		display: 'flex',
 		flexDirection: 'column',
 		alignItems: 'flex-end',
@@ -85,7 +87,7 @@ const useStyles = makeStyles((theme) => ({
 		width: "100%"
 	},
 	paperLM: {
-		padding: '25px',
+		padding: '15px 25px',
 		display: 'flex',
 		flexDirection: 'column',
 		alignItems: 'flex-end',
@@ -93,7 +95,7 @@ const useStyles = makeStyles((theme) => ({
 	paperHeader: {
 		display: 'flex',
 		width: '100%',
-		marginBottom: '25px'
+		marginBottom: '12px'
 	},
 	paperTitle: {
 		fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif;',
@@ -102,10 +104,10 @@ const useStyles = makeStyles((theme) => ({
 		color: '#505050'
 	},
 	paperPCP: {
-		padding: '25px',
+		padding: '15px 25px',
 		display: 'flex',
 		flexDirection: 'column',
-		marginTop: 15
+		marginTop: 12
 	}
 }))
 
@@ -114,6 +116,9 @@ export const VaineWidget = ({data, covariates, treatments, outcomes, ignore, lat
 
 	// Dataset used for current treatment outcome pair + clustering
 	const [dataset, setDataset] = React.useState([])
+
+	// Regression equation for the entire dataset
+	const [datasetRegression, setDatasetRegression] = React.useState({})
 
 	// Track analysis settings
 	const [pThreshold, setPThreshold] = React.useState(0.05)
@@ -181,10 +186,15 @@ export const VaineWidget = ({data, covariates, treatments, outcomes, ignore, lat
 
 		const newSorted = Object.keys(newRegressions).sort()
 
+		const overallRegression = datasetStats(dataset, currentExcluded, selectedTreatment, selectedOutcome)
+		// console.log(overallRegression)
+
 		setValidClusters(newSelections)
 		setRegressions(newRegressions)
 		setSortedClusters(newSorted)
 		setATE(ATE)
+
+		setDatasetRegression(overallRegression)
 
 	}, [dataset, selectedTreatment, selectedOutcome])
 
@@ -199,9 +209,14 @@ export const VaineWidget = ({data, covariates, treatments, outcomes, ignore, lat
 
 		const newSorted = Object.keys(newRegressions).sort()
 
+		const overallRegression = datasetStats(dataset, currentExcluded, selectedTreatment, selectedOutcome)
+		// console.log(overallRegression)
+
 		setRegressions(newRegressions)
 		setSortedClusters(newSorted)
 		setATE(ATE)
+
+		setDatasetRegression(overallRegression)
 
 	}, [excluded])
 
@@ -507,7 +522,8 @@ export const VaineWidget = ({data, covariates, treatments, outcomes, ignore, lat
 										 clusterName={clusterName}
 										 clusterAppearance={clusterAppearance}
 										 onSelect={onSelectCluster}
-										 onDeselect={onDeselect} />
+										 onDeselect={onDeselect}
+										 overallRegression={datasetRegression} />
 					</Paper>
 				</div>
 				<Paper className={classes.paperPCP}>
